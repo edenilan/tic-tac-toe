@@ -1,0 +1,9 @@
+<table>
+  <tr *ngFor="let row of boardModel; index as rowIndex">
+    <td *ngFor="let cell of row; index as cellIndex"
+        class="cell"
+        (click)="cellClicked(rowIndex, cellIndex)">
+      {{cell}}
+    </td>
+  </tr>
+</table>
