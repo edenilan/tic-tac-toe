@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable, Subject} from "rxjs";
+import {deepCloneBoard, isGameWon, isTie} from "./game.helpers";
 
 export interface Cell {
   row: number;
@@ -26,16 +27,7 @@ export interface GameConfig{
   [PlayerId.ONE]: Player;
   [PlayerId.TWO]: Player;
 }
-const winCombos = [
-  [0,1,2],
-  [3,4,5],
-  [6,7,8],
-  [0,3,6],
-  [1,4,7],
-  [2,5,8],
-  [0,4,8],
-  [2,4,6]
-];
+
 const defaultGameConfig: GameConfig = {
   [PlayerId.ONE]: {
     opponentType: OpponentType.HUMAN,
@@ -53,36 +45,6 @@ const EMPTY_BOARD = [
   [undefined, undefined, undefined],
   [undefined, undefined, undefined],
 ];
-
-function flattenBoard(board: string[][]): string[] {
-  return board.reduce((acc, currentRow) => [...acc, ...currentRow], []);
-}
-
-function isGameWon(board: string[][], player: Player): boolean {
-  const flattenedBoard = flattenBoard(board);
-  const playerCellIndices = flattenedBoard.reduce(
-    (acc, currCellValue, index) => (currCellValue === player.mark) ? [...acc, index] : acc
-    ,[]
-  );
-  return winCombos.some(combo =>
-    combo.every(index =>
-      playerCellIndices.includes(index)
-    )
-  );
-}
-
-function isTie(board: string[][], player: Player): boolean {
-  const flattenedBoard = flattenBoard(board);
-  return !isGameWon(board, player) && flattenedBoard.every((cellValue: string) => cellValue !== undefined);
-}
-
-function deepCloneBoard(board: string[][]){
-  let freshBoard = [];
-  board.forEach((row: string[]) => {
-    freshBoard = [...freshBoard, [...row]];
-  });
-  return freshBoard;
-}
 
 @Injectable()
 export class GameEngineService {
