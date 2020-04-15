@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable, Subject} from "rxjs";
 import {deepCloneBoard, isGameWon, isTie} from "./game.helpers";
 import {ComputerOpponentService} from "./computer-opponent.service";
-import {Cell, GameConfig, Move, OpponentType, Player, PlayerId, PlayersMap} from "./gam.types";
+import {Cell, GameConfig, Move, OpponentType, Player, PlayerId, PlayersMap} from "./game.types";
 
 // TODO: this should be in a dedicated configService
 const defaultGameConfig: GameConfig = {
