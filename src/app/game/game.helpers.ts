@@ -1,4 +1,4 @@
-import {Player} from "./game-engine.service";
+import {Player} from "./gam.types";
 
 const winCombos = [
   [0,1,2],
@@ -15,9 +15,8 @@ export function flattenBoard(board: string[][]): string[] {
   return board.reduce((acc, currentRow) => [...acc, ...currentRow], []);
 }
 
-export function isGameWon(board: string[][], player: Player): boolean {
-  const flattenedBoard = flattenBoard(board);
-  const playerCellIndices = flattenedBoard.reduce(
+export function checkWinForFlatBoard(flatBoard: string[], player: Player): boolean {
+  const playerCellIndices = flatBoard.reduce(
     (acc, currCellValue, index) => (currCellValue === player.mark) ? [...acc, index] : acc
     ,[]
   );
@@ -26,6 +25,11 @@ export function isGameWon(board: string[][], player: Player): boolean {
       playerCellIndices.includes(index)
     )
   );
+}
+
+export function isGameWon(board: string[][], player: Player): boolean {
+  const flattenedBoard = flattenBoard(board);
+  return checkWinForFlatBoard(flattenedBoard, player);
 }
 
 export function isTie(board: string[][], player: Player): boolean {
@@ -39,4 +43,14 @@ export function deepCloneBoard(board: string[][]){
     freshBoard = [...freshBoard, [...row]];
   });
   return freshBoard;
+}
+
+export function getFlatBoardEmptyIndices(flatBoard: string[]): number[] {
+  let emptyIndices: number[] = [];
+  flatBoard.forEach((cell: string, index: number) => {
+    if (cell === undefined){
+      emptyIndices.push(index);
+    }
+  });
+  return emptyIndices;
 }

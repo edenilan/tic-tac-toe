@@ -1,43 +1,23 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable, Subject} from "rxjs";
 import {deepCloneBoard, isGameWon, isTie} from "./game.helpers";
+import {ComputerOpponentService} from "./computer-opponent.service";
+import {Cell, GameConfig, Move, OpponentType, Player, PlayerId, PlayersMap} from "./gam.types";
 
-export interface Cell {
-  row: number;
-  column: number;
-}
-export interface Move{
-  cell: Cell
-  player: Player;
-}
-export enum OpponentType {
-  HUMAN,
-  COMPUTER
-}
-export interface Player {
-  opponentType: OpponentType;
-  mark: string;
-  name: string;
-}
-enum PlayerId{
-  ONE = 1,
-  TWO = 2
-}
-export interface GameConfig{
-  [PlayerId.ONE]: Player;
-  [PlayerId.TWO]: Player;
-}
-
+// TODO: this should be in a dedicated configService
 const defaultGameConfig: GameConfig = {
-  [PlayerId.ONE]: {
-    opponentType: OpponentType.HUMAN,
-    mark: "O",
-    name: "Player 1",
-  },
-  [PlayerId.TWO]: {
-    opponentType: OpponentType.HUMAN,
-    mark: "X",
-    name: "Player 2",
+  players: {
+    [PlayerId.ONE]: {
+      opponentType: OpponentType.HUMAN,
+      mark: "O",
+      name: "Player 1",
+    },
+    [PlayerId.TWO]: {
+      opponentType: OpponentType.COMPUTER,
+      mark: "X",
+      name: "Computer",
+    }
+
   }
 };
 const EMPTY_BOARD = [
@@ -54,9 +34,10 @@ export class GameEngineService {
   public winner$: Observable<Player> = this.winnerBS.asObservable();
   private tieGameBS = new BehaviorSubject<true>(undefined);
   public tieGame$: Observable<true> = this.tieGameBS.asObservable();
-  private gameConfig: GameConfig = defaultGameConfig;
-  private currentPlayer: Player = this.gameConfig[PlayerId.ONE];
-  constructor() {
+  private players: PlayersMap = defaultGameConfig.players;
+  private currentPlayer: Player = this.players[PlayerId.ONE];
+  constructor(private computerOpponentService: ComputerOpponentService) {
+    this.computerOpponentService.setConfig(this.players);
   }
 
   public cellClicked(cell: Cell): void {
@@ -78,19 +59,27 @@ export class GameEngineService {
     this.boardBS.next(EMPTY_BOARD);
     this.winnerBS.next(undefined);
     this.tieGameBS.next(undefined);
-    this.currentPlayer = this.gameConfig[PlayerId.ONE];
+    this.currentPlayer = this.players[PlayerId.ONE];
   }
 
   private executeMove(board: string[][], move: Move): void {
     board = this.updateBoard(board, move);
     if (isGameWon(board, move.player)){
       this.winnerBS.next(move.player);
+      return;
     }
-    else if (isTie(board, move.player)){
+    if (isTie(board, move.player)){
       this.tieGameBS.next(true);
+      return;
     }
-    else {
-      this.toggleCurrentPlayer();
+    this.toggleCurrentPlayer();
+    if (this.currentPlayer.opponentType === OpponentType.COMPUTER){
+      const computerCell = this.computerOpponentService.getNextMove(deepCloneBoard(board));
+      const computerMove: Move = {
+        cell: computerCell,
+        player: this.currentPlayer
+      };
+      this.executeMove(board, computerMove);
     }
   }
 
@@ -102,8 +91,8 @@ export class GameEngineService {
     return freshBoard;
   }
   private toggleCurrentPlayer(): void {
-    const player1 = this.gameConfig[PlayerId.ONE];
-    const player2 = this.gameConfig[PlayerId.TWO];
+    const player1 = this.players[PlayerId.ONE];
+    const player2 = this.players[PlayerId.TWO];
     this.currentPlayer = (this.currentPlayer === player1) ? player2 : player1;
   }
   private isGameOver(): boolean {

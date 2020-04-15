@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {GameComponent} from "./game.component";
 import {GameEngineService} from "./game-engine.service";
+import {ComputerOpponentService} from "./computer-opponent.service";
 
 
 
@@ -17,6 +18,7 @@ import {GameEngineService} from "./game-engine.service";
   ],
   providers: [
     GameEngineService,
+    ComputerOpponentService
   ]
 })
 export class GameModule { }
