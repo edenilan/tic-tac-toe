@@ -38,6 +38,7 @@ export class GameEngineService {
   private currentPlayer: Player = this.players[PlayerId.ONE];
   constructor(private computerOpponentService: ComputerOpponentService) {
     this.computerOpponentService.setConfig(this.players);
+    this.startGame();
   }
 
   public cellClicked(cell: Cell): void {
@@ -60,6 +61,11 @@ export class GameEngineService {
     this.winnerBS.next(undefined);
     this.tieGameBS.next(undefined);
     this.currentPlayer = this.players[PlayerId.ONE];
+    this.startGame();
+  }
+
+  private startGame(): void {
+    this.playComputerIfNeeded(EMPTY_BOARD);
   }
 
   private executeMove(board: string[][], move: Move): void {
@@ -73,6 +79,10 @@ export class GameEngineService {
       return;
     }
     this.toggleCurrentPlayer();
+    this.playComputerIfNeeded(board);
+  }
+
+  private playComputerIfNeeded(board: string[][]): void {
     if (this.currentPlayer.opponentType === OpponentType.COMPUTER){
       const computerCell = this.computerOpponentService.getNextMove(deepCloneBoard(board));
       const computerMove: Move = {
