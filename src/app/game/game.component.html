@@ -1,3 +1,4 @@
+<button (click)="replayButtonClicked()">Replay</button>
 <table>
   <tr *ngFor="let row of gameEngineService.board$|async; index as rowIndex">
     <td *ngFor="let cell of row; index as cellIndex"

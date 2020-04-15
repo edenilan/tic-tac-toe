@@ -1,10 +1,11 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {GameEngineService} from "./game-engine.service";
 
 @Component({
   selector: 'ttt-game',
   templateUrl: './game.component.html',
-  styleUrls: ['./game.component.scss']
+  styleUrls: ['./game.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GameComponent implements OnInit {
   constructor(public gameEngineService: GameEngineService) { }
@@ -15,5 +16,8 @@ export class GameComponent implements OnInit {
   cellClicked(rowIndex, columnIndex): void {
     console.log(`cell clicked: row ${rowIndex}, column ${columnIndex}`);
     this.gameEngineService.cellClicked({row: rowIndex, column: columnIndex});
+  }
+  replayButtonClicked(): void {
+    this.gameEngineService.replayGame();
   }
 }

@@ -112,6 +112,13 @@ export class GameEngineService {
     this.executeMove(currentBoard, move);
   }
 
+  public replayGame(): void {
+    this.boardBS.next(EMPTY_BOARD);
+    this.winnerBS.next(undefined);
+    this.tieGameBS.next(undefined);
+    this.currentPlayer = this.gameConfig[PlayerId.ONE];
+  }
+
   private executeMove(board: string[][], move: Move): void {
     this.updateBoard(board, move);
     if (isGameWon(board, move.player)){
