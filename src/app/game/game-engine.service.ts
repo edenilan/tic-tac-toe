@@ -76,6 +76,14 @@ function isTie(board: string[][], player: Player): boolean {
   return !isGameWon(board, player) && flattenedBoard.every((cellValue: string) => cellValue !== undefined);
 }
 
+function deepCloneBoard(board: string[][]){
+  let freshBoard = [];
+  board.forEach((row: string[]) => {
+    freshBoard = [...freshBoard, [...row]];
+  });
+  return freshBoard;
+}
+
 @Injectable()
 export class GameEngineService {
   public boardBS = new BehaviorSubject<string[][]>(EMPTY_BOARD);
@@ -119,7 +127,7 @@ export class GameEngineService {
 
   private updateBoard(board: string[][], move: Move){
     const {cell, player} = move;
-    let freshBoard = [...board];
+    const freshBoard = deepCloneBoard(board);
     freshBoard[cell.row][cell.column] = player.mark;
     this.boardBS.next(freshBoard);
   }
