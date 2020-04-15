@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {GameComponent} from "./game.component";
+import {GameEngineService} from "./game-engine.service";
 
 
 
@@ -9,10 +10,13 @@ import {GameComponent} from "./game.component";
     GameComponent,
   ],
   imports: [
-    CommonModule
+    CommonModule,
   ],
   exports: [
     GameComponent
+  ],
+  providers: [
+    GameEngineService,
   ]
 })
 export class GameModule { }

@@ -1,5 +1,5 @@
 <table>
-  <tr *ngFor="let row of boardModel; index as rowIndex">
+  <tr *ngFor="let row of gameEngineService.board$|async; index as rowIndex">
     <td *ngFor="let cell of row; index as cellIndex"
         class="cell"
         (click)="cellClicked(rowIndex, cellIndex)">
@@ -7,3 +7,9 @@
     </td>
   </tr>
 </table>
+<div *ngIf="gameEngineService.winner$|async as winner" class="endgame">
+  {{winner.name}} wins!
+</div>
+<div *ngIf="gameEngineService.tieGame$|async" class="endgame">
+  Tie Game!
+</div>
