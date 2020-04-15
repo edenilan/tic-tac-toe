@@ -2,21 +2,16 @@ import {Injectable} from '@angular/core';
 import {Cell, OpponentType, Player, PlayersMap} from "./gam.types";
 import {checkWinForFlatBoard, flattenBoard, getFlatBoardEmptyIndices} from "./game.helpers";
 
-
 @Injectable()
 export class ComputerOpponentService {
   private computerPlayer: Player;
   private humanPlayer: Player;
-  private aiMark: string;
-  private huMark: string;
   constructor() {
   }
   // TODO: remove this
   public setConfig(playersMap: PlayersMap){
     this.computerPlayer = Object.values(playersMap).find((player: Player) => player.opponentType === OpponentType.COMPUTER);
     this.humanPlayer = Object.values(playersMap).find((player: Player) => player.opponentType === OpponentType.HUMAN);
-    this.aiMark = this.computerPlayer.mark;
-    this.huMark = this.humanPlayer.mark;
   }
   public getNextMove(board: string[][]): Cell {
     const bestMoveFlatIndex = this.computeBestMove(flattenBoard(board), this.computerPlayer).index;
