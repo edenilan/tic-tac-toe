@@ -120,7 +120,7 @@ export class GameEngineService {
   }
 
   private executeMove(board: string[][], move: Move): void {
-    this.updateBoard(board, move);
+    board = this.updateBoard(board, move);
     if (isGameWon(board, move.player)){
       this.winnerBS.next(move.player);
     }
@@ -132,11 +132,12 @@ export class GameEngineService {
     }
   }
 
-  private updateBoard(board: string[][], move: Move){
+  private updateBoard(board: string[][], move: Move): string[][]{
     const {cell, player} = move;
     const freshBoard = deepCloneBoard(board);
     freshBoard[cell.row][cell.column] = player.mark;
     this.boardBS.next(freshBoard);
+    return freshBoard;
   }
   private toggleCurrentPlayer(): void {
     const player1 = this.gameConfig[PlayerId.ONE];
