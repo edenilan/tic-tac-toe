@@ -7,8 +7,8 @@ export interface Move{
   player: Player;
 }
 export enum OpponentType {
-  HUMAN,
-  COMPUTER
+  HUMAN = "Human",
+  COMPUTER = "Computer"
 }
 export interface Player {
   opponentType: OpponentType;

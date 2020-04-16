@@ -1,2 +1,54 @@
-<button (click)="start2PlayerGame()">Start 2-player game</button>
-<button (click)="startPlayerVsComputerGame()">Start player vs. computer game</button>
+
+<form [formGroup]="gameConfigForm" (ngSubmit)="startGame()">
+  <div class="players-config" formGroupName="players">
+    <div class="player-config" [formGroupName]="playerIds.ONE">
+      <div>Player 1 profile</div>
+      <label>
+        Opponent type:
+        <select formControlName="opponentType">
+          <option *ngFor="let opponentType of opponentTypes" [ngValue]="opponentType">
+            {{opponentType}}
+          </option>
+        </select>
+      </label>
+      <label>
+        Mark:
+        <select formControlName="mark">
+          <option *ngFor="let mark of marks" [ngValue]="mark">
+            {{mark}}
+          </option>
+        </select>
+      </label>
+      <label>
+        Name:
+        <input type="text" formControlName="name">
+      </label>
+    </div>
+    <div class="player-config" [formGroupName]="playerIds.TWO">
+      <div>Player 2 profile</div>
+      <label>
+        Opponent type:
+        <select formControlName="opponentType">
+          <option *ngFor="let opponentType of opponentTypes" [ngValue]="opponentType">
+            {{opponentType}}
+          </option>
+        </select>
+      </label>
+      <label>
+        Mark:
+        <select formControlName="mark">
+          <option *ngFor="let mark of marks" [ngValue]="mark">
+            {{mark}}
+          </option>
+        </select>
+      </label>
+      <label>
+        Name:
+        <input type="text" formControlName="name">
+      </label>
+    </div>
+  </div>
+
+  <button type="submit" [disabled]="!gameConfigForm.valid">Go!</button>
+</form>
+{{gameConfigForm.value | json}}
