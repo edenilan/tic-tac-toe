@@ -34,10 +34,10 @@ export class GameEngineService {
   public winner$: Observable<Player> = this.winnerBS.asObservable();
   private tieGameBS = new BehaviorSubject<true>(undefined);
   public tieGame$: Observable<true> = this.tieGameBS.asObservable();
-  private players: PlayersMap = defaultGameConfig.players;
+  private gameConfig: GameConfig = defaultGameConfig;
+  private players: PlayersMap = this.gameConfig.players;
   private currentPlayer: Player = this.players[PlayerId.ONE];
   constructor(private computerOpponentService: ComputerOpponentService) {
-    this.computerOpponentService.setConfig(this.players);
     this.startGame();
   }
 
@@ -84,7 +84,7 @@ export class GameEngineService {
 
   private playComputerIfNeeded(board: string[][]): void {
     if (this.currentPlayer.opponentType === OpponentType.COMPUTER){
-      const computerCell = this.computerOpponentService.getNextMove(deepCloneBoard(board));
+      const computerCell = this.computerOpponentService.getNextMove(deepCloneBoard(board), this.gameConfig);
       const computerMove: Move = {
         cell: computerCell,
         player: this.currentPlayer

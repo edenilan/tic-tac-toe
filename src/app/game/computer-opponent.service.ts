@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Cell, OpponentType, Player, PlayersMap} from "./game.types";
+import {Cell, GameConfig, OpponentType, Player, PlayersMap} from "./game.types";
 import {checkWinForFlatBoard, flattenBoard, getFlatBoardEmptyIndices} from "./game.helpers";
 
 @Injectable()
@@ -8,12 +8,8 @@ export class ComputerOpponentService {
   private humanPlayer: Player;
   constructor() {
   }
-  // TODO: remove this
-  public setConfig(playersMap: PlayersMap){
-    this.computerPlayer = Object.values(playersMap).find((player: Player) => player.opponentType === OpponentType.COMPUTER);
-    this.humanPlayer = Object.values(playersMap).find((player: Player) => player.opponentType === OpponentType.HUMAN);
-  }
-  public getNextMove(board: string[][]): Cell {
+  public getNextMove(board: string[][], gameConfig: GameConfig): Cell {
+    this.setConfig(gameConfig);
     const bestMoveFlatIndex = this.computeBestMove(flattenBoard(board), this.computerPlayer).index;
     return {
       // TODO: remove magic numbers (3)
@@ -21,7 +17,11 @@ export class ComputerOpponentService {
       column: bestMoveFlatIndex % 3
     };
   }
-
+  private setConfig(gameConfig: GameConfig){
+    const {players} = gameConfig;
+    this.computerPlayer = Object.values(players).find((player: Player) => player.opponentType === OpponentType.COMPUTER);
+    this.humanPlayer = Object.values(players).find((player: Player) => player.opponentType === OpponentType.HUMAN);
+  }
   private computeBestMove(board: string[], player: Player){
     var availableSpots = getFlatBoardEmptyIndices(board);
 
