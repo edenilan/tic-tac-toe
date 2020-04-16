@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import {GameComponent} from "./game.component";
 import {GameEngineService} from "./game-engine.service";
 import {ComputerOpponentService} from "./computer-opponent.service";
+import {RouterModule} from "@angular/router";
 
 
 
@@ -12,6 +13,7 @@ import {ComputerOpponentService} from "./computer-opponent.service";
   ],
   imports: [
     CommonModule,
+    RouterModule,
   ],
   exports: [
     GameComponent
