@@ -2,24 +2,9 @@ import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable, Subject} from "rxjs";
 import {deepCloneBoard, isGameWon, isTie} from "./game.helpers";
 import {ComputerOpponentService} from "./computer-opponent.service";
-import {Cell, GameConfig, Move, OpponentType, Player, PlayerId, PlayersMap} from "./game.types";
+import {Cell, GameConfig, Move, OpponentType, Player, PlayerId, PlayersMap} from "../ttt.types";
+import {SettingsService} from "../settings/settings.service";
 
-// TODO: this should be in a dedicated configService
-const defaultGameConfig: GameConfig = {
-  players: {
-    [PlayerId.ONE]: {
-      opponentType: OpponentType.HUMAN,
-      mark: "O",
-      name: "Player 1",
-    },
-    [PlayerId.TWO]: {
-      opponentType: OpponentType.COMPUTER,
-      mark: "X",
-      name: "Computer",
-    }
-
-  }
-};
 const EMPTY_BOARD = [
   [undefined, undefined, undefined],
   [undefined, undefined, undefined],
@@ -34,12 +19,13 @@ export class GameEngineService {
   public winner$: Observable<Player> = this.winnerBS.asObservable();
   private tieGameBS = new BehaviorSubject<true>(undefined);
   public tieGame$: Observable<true> = this.tieGameBS.asObservable();
-  private gameConfig: GameConfig = defaultGameConfig;
-  private players: PlayersMap = this.gameConfig.players;
-  private currentPlayer: Player = this.players[PlayerId.ONE];
-  constructor(private computerOpponentService: ComputerOpponentService) {
-    this.startGame();
-  }
+  private gameConfig: GameConfig;
+  private players: PlayersMap;
+  private currentPlayer: Player;
+  constructor(
+    private computerOpponentService: ComputerOpponentService,
+    private settingsService: SettingsService,
+  ) {}
 
   public cellClicked(cell: Cell): void {
     if (this.isGameOver()){
@@ -56,15 +42,14 @@ export class GameEngineService {
     this.executeMove(currentBoard, move);
   }
 
-  public replayGame(): void {
+  public startNewGame(): void {
+    this.gameConfig = this.settingsService.gameConfig;
+    this.players = this.gameConfig.players;
+    this.currentPlayer = this.players[PlayerId.ONE];
+    this.currentPlayer = this.players[PlayerId.ONE];
     this.boardBS.next(EMPTY_BOARD);
     this.winnerBS.next(undefined);
     this.tieGameBS.next(undefined);
-    this.currentPlayer = this.players[PlayerId.ONE];
-    this.startGame();
-  }
-
-  private startGame(): void {
     this.playComputerIfNeeded(EMPTY_BOARD);
   }
 

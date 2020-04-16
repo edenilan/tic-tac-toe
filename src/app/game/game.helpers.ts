@@ -1,4 +1,4 @@
-import {Player} from "./game.types";
+import {Player} from "../ttt.types";
 
 const winCombos = [
   [0,1,2],

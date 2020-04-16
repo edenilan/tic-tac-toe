@@ -7,6 +7,7 @@ import {GameModule} from "./game/game.module";
 import { SettingsComponent } from './settings/settings.component';
 import {RouterModule, Routes} from "@angular/router";
 import {GameComponent} from "./game/game.component";
+import {SettingsModule} from "./settings/settings.module";
 
 const appRoutes: Routes = [
   { path: 'settings', component: SettingsComponent },
@@ -23,7 +24,6 @@ const appRoutes: Routes = [
 @NgModule({
   declarations: [
     AppComponent,
-    SettingsComponent
   ],
   imports: [
     BrowserModule,
@@ -32,7 +32,8 @@ const appRoutes: Routes = [
     RouterModule.forRoot(
       appRoutes,
       { enableTracing: true }
-    )
+    ),
+    SettingsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

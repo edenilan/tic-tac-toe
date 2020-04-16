@@ -4,6 +4,7 @@ import {GameComponent} from "./game.component";
 import {GameEngineService} from "./game-engine.service";
 import {ComputerOpponentService} from "./computer-opponent.service";
 import {RouterModule} from "@angular/router";
+import {SettingsService} from "../settings/settings.service";
 
 
 
@@ -20,7 +21,8 @@ import {RouterModule} from "@angular/router";
   ],
   providers: [
     GameEngineService,
-    ComputerOpponentService
+    ComputerOpponentService,
+    SettingsService
   ]
 })
 export class GameModule { }

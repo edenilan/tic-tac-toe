@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Cell, GameConfig, OpponentType, Player, PlayersMap} from "./game.types";
+import {Cell, GameConfig, OpponentType, Player, PlayersMap} from "../ttt.types";
 import {checkWinForFlatBoard, flattenBoard, getFlatBoardEmptyIndices} from "./game.helpers";
 
 @Injectable()
