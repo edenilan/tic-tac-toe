@@ -69,7 +69,7 @@ export class GameEngineService {
 
   private playComputerIfNeeded(board: string[][]): void {
     if (this.currentPlayer.opponentType === OpponentType.COMPUTER){
-      const computerCell = this.computerOpponentService.getNextMove(deepCloneBoard(board), this.gameConfig);
+      const computerCell = this.computerOpponentService.getNextMove(this.currentPlayer, deepCloneBoard(board), this.gameConfig);
       const computerMove: Move = {
         cell: computerCell,
         player: this.currentPlayer

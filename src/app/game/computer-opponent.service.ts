@@ -4,30 +4,30 @@ import {checkWinForFlatBoard, flattenBoard, getFlatBoardEmptyIndices} from "./ga
 
 @Injectable()
 export class ComputerOpponentService {
-  private computerPlayer: Player;
-  private humanPlayer: Player;
+  private currentPlayer: Player;
+  private otherPlayer: Player;
   constructor() {
   }
-  public getNextMove(board: string[][], gameConfig: GameConfig): Cell {
-    this.setConfig(gameConfig);
-    const bestMoveFlatIndex = this.computeBestMove(flattenBoard(board), this.computerPlayer).index;
+  public getNextMove(currentPlayer: Player, board: string[][], gameConfig: GameConfig): Cell {
+    this.setConfig(currentPlayer, gameConfig);
+    const bestMoveFlatIndex = this.computeBestMove(flattenBoard(board), this.currentPlayer).index;
     return {
       // TODO: remove magic numbers (3)
       row: Math.floor(bestMoveFlatIndex / 3),
       column: bestMoveFlatIndex % 3
     };
   }
-  private setConfig(gameConfig: GameConfig){
+  private setConfig(currentPlayer: Player, gameConfig: GameConfig){
     const {players} = gameConfig;
-    this.computerPlayer = Object.values(players).find((player: Player) => player.opponentType === OpponentType.COMPUTER);
-    this.humanPlayer = Object.values(players).find((player: Player) => player.opponentType === OpponentType.HUMAN);
+    this.currentPlayer = currentPlayer;
+    this.otherPlayer = Object.values(players).find((player: Player) => player !== currentPlayer);
   }
   private computeBestMove(board: string[], player: Player){
     var availableSpots = getFlatBoardEmptyIndices(board);
 
-    if(checkWinForFlatBoard(board, this.humanPlayer)){
+    if(checkWinForFlatBoard(board, this.otherPlayer)){
       return{score: -10};
-    }else if(checkWinForFlatBoard(board, this.computerPlayer)){
+    }else if(checkWinForFlatBoard(board, this.currentPlayer)){
       return {score: 10};
     }else if(availableSpots.length === 0){
       return {score: 0};
@@ -39,11 +39,11 @@ export class ComputerOpponentService {
       move.index = availableSpots[i];
       board[availableSpots[i]] = player.mark;
 
-      if(player == this.computerPlayer){
-        var result = this.computeBestMove(board, this.humanPlayer);
+      if(player == this.currentPlayer){
+        var result = this.computeBestMove(board, this.otherPlayer);
         move.score = result.score;
       }else{
-        var result = this.computeBestMove(board, this.computerPlayer);
+        var result = this.computeBestMove(board, this.currentPlayer);
         move.score = result.score;
       }
       board[availableSpots[i]] = undefined;
@@ -51,7 +51,7 @@ export class ComputerOpponentService {
     }
 
     var bestMove;
-    if(player === this.computerPlayer){
+    if(player === this.currentPlayer){
       var bestScore = -10000;
       for(var i = 0; i < moves.length; i++) {
         if(moves[i].score > bestScore){
