@@ -10,6 +10,7 @@ import {MatSelectModule} from "@angular/material/select";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import {MatButtonModule} from "@angular/material/button";
+import { PlayerConfigComponent } from './player-config/player-config.component';
 
 @NgModule({
   imports: [
@@ -24,7 +25,7 @@ import {MatButtonModule} from "@angular/material/button";
     MatButtonModule,
   ],
   exports: [],
-  declarations: [SettingsComponent],
+  declarations: [SettingsComponent, PlayerConfigComponent, PlayerConfigComponent],
   providers: [SettingsService],
 })
 export class SettingsModule {

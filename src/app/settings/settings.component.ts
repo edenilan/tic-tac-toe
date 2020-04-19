@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
-import {SettingsService, MARKS} from "./settings.service";
+import {SettingsService} from "./settings.service";
 import {FormBuilder, FormGroup} from "@angular/forms";
-import {OpponentType, PlayerId} from "../ttt.types";
+import {PlayerId} from "../ttt.types";
 
 @Component({
   selector: 'ttt-settings',
@@ -10,11 +10,13 @@ import {OpponentType, PlayerId} from "../ttt.types";
   styleUrls: ['./settings.component.scss']
 })
 export class SettingsComponent implements OnInit {
-  public opponentTypes: OpponentType[] = [OpponentType.HUMAN, OpponentType.COMPUTER];
-  public marks: string[] = MARKS;
-  public playerIds = PlayerId; // for referencing in template
   public gameConfigForm: FormGroup = this.groupify(this.settingsService.gameConfig);
-
+  get player1FormGroup(): FormGroup{
+    return this.gameConfigForm.get(`players.${PlayerId.ONE}`) as FormGroup;
+  }
+  get player2FormGroup(): FormGroup{
+    return this.gameConfigForm.get(`players.${PlayerId.TWO}`) as FormGroup;
+  }
   constructor(
     private router: Router,
     private settingsService: SettingsService,
