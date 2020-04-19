@@ -2,21 +2,11 @@ export interface BoardCoordinates {
   row: number;
   column: number;
 }
-export interface BoardCell {
-  value: string;
-  isInWinningCombo: boolean;
-}
-export const emptyBoardCell: BoardCell = {
-  value: undefined,
-  isInWinningCombo: false
-};
-export interface FlatBoard {  //1-dimensional board
-  cells: BoardCell[];
+export interface FlatBoard<T> {  //1-dimensional board
+  cells: T[];
   numRows: number;
   numColumns: number;
 }
-export type TwoDimensionalBoard = BoardCell[][];
-
 export interface Move{
   flatIndex: number;
   player: Player;

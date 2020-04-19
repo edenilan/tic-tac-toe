@@ -1,4 +1,4 @@
-import {BoardCell, BoardCoordinates, emptyBoardCell, FlatBoard, Player, TwoDimensionalBoard} from "../ttt.types";
+import {BoardCoordinates, FlatBoard, Player} from "../ttt.types";
 
 const winCombos = [
   [0,1,2],
@@ -11,8 +11,8 @@ const winCombos = [
   [2,4,6]
 ];
 
-export function generateEmptyBoard(numRows: number, numColumns: number): FlatBoard {
-  const cells = Array(numRows * numColumns).fill({...emptyBoardCell});
+export function generateEmptyBoard(numRows: number, numColumns: number): FlatBoard<string> {
+  const cells = Array.from({length: numRows * numColumns}, () => undefined);
   return {
     cells: cells,
     numRows: numRows,
@@ -28,42 +28,48 @@ export function flattenBoard(board: string[][]): string[] {
   return board.reduce((acc, currentRow) => [...acc, ...currentRow], []);
 }
 
-export function isGameWon(flatBoard: FlatBoard, player: Player): boolean {
+export function getWinningIndices(flatBoard: FlatBoard<string>, player: Player): number[] {
   const playerCellIndices = flatBoard.cells.reduce(
-    (acc, currCell, index) => (currCell.value === player.mark) ? [...acc, index] : acc
+    (acc, currCellValue, index) => (currCellValue === player.mark) ? [...acc, index] : acc
     ,[]
   );
-  return winCombos.some(combo =>
+  const winningIndices = winCombos.find(combo =>
     combo.every(index =>
       playerCellIndices.includes(index)
     )
   );
+  return winningIndices || [];
 }
 
-export function isTie(board: FlatBoard, player: Player): boolean {
-  return !isGameWon(board, player) && board.cells.every((cell: BoardCell) => cell.value !== undefined);
+export function isGameWon(flatBoard: FlatBoard<string>, player: Player): boolean {
+  const winningIndices = getWinningIndices(flatBoard, player);
+  return winningIndices && winningIndices.length > 0;
 }
 
-export function deepCloneBoard(board: FlatBoard): FlatBoard{
-  const freshCells: BoardCell[] = board.cells.map((cell: BoardCell) => ({...cell}));
-  const freshBoard: FlatBoard = {
+export function isTie(board: FlatBoard<string>, player: Player): boolean {
+  return !isGameWon(board, player) && board.cells.every((cell: string) => cell !== undefined);
+}
+
+export function deepCloneBoard(board: FlatBoard<string>): FlatBoard<string>{
+  return {
     ...board,
-    cells: freshCells
+    cells: [...board.cells]
   };
-  return freshBoard;
 }
 
-export function getFlatBoardEmptyIndices(flatBoard: FlatBoard): number[] {
+export function getFlatBoardEmptyIndices(flatBoard: FlatBoard<string>): number[] {
   let emptyIndices: number[] = [];
-  flatBoard.cells.forEach((cell: BoardCell, index: number) => {
-    if (cell.value === undefined){
+  flatBoard.cells.forEach((cell: string, index: number) => {
+    if (cell === undefined){
       emptyIndices.push(index);
     }
   });
   return emptyIndices;
 }
 
-export function to2DBoard(flatBoard: FlatBoard): TwoDimensionalBoard {
+export function to2DBoard<T>(flatBoard: FlatBoard<T>): T[][] {
   const {numRows, numColumns, cells} = flatBoard;
-  return Array.from({length: flatBoard.numRows}, (x, i) => flatBoard.cells.slice(numRows * i, (numRows * i) + numColumns));
+  return Array
+      .from<T>({length: flatBoard.numRows})
+      .map((r, i) => cells.slice(numRows * i, (numRows * i) + numColumns));
 }

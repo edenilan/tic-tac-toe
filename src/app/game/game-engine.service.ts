@@ -1,9 +1,8 @@
 import {Injectable} from '@angular/core';
-import {BehaviorSubject, Observable} from "rxjs";
-import {deepCloneBoard, generateEmptyBoard, getFlatIndex, isGameWon, isTie} from "./game.helpers";
+import {BehaviorSubject, combineLatest, Observable} from "rxjs";
+import {deepCloneBoard, generateEmptyBoard, getFlatIndex, getWinningIndices, isGameWon, isTie} from "./game.helpers";
 import {ComputerOpponentService} from "./computer-opponent.service";
 import {
-  BoardCell,
   BoardCoordinates,
   FlatBoard,
   GameConfig,
@@ -14,11 +13,12 @@ import {
   PlayersMap
 } from "../ttt.types";
 import {SettingsService} from "../settings/settings.service";
+import {filter, map} from "rxjs/operators";
 
 @Injectable()
 export class GameEngineService {
-  public boardBS = new BehaviorSubject<FlatBoard>(generateEmptyBoard(3, 3));
-  public board$: Observable<FlatBoard> = this.boardBS.asObservable();
+  public boardBS = new BehaviorSubject<FlatBoard<string>>(generateEmptyBoard(3, 3));
+  public board$: Observable<FlatBoard<string>> = this.boardBS.asObservable();
   private winnerBS = new BehaviorSubject<Player>(undefined);
   public winner$: Observable<Player> = this.winnerBS.asObservable();
   private tieGameBS = new BehaviorSubject<true>(undefined);
@@ -26,6 +26,10 @@ export class GameEngineService {
   private gameConfig: GameConfig;
   private players: PlayersMap;
   private currentPlayer: Player;
+  public winningIndices$: Observable<number[]> = combineLatest([this.winner$, this.board$]).pipe(
+    filter(([winner, board]) => winner !== undefined),
+    map(([winner, board]) => getWinningIndices(board, winner))
+);
   constructor(
     private computerOpponentService: ComputerOpponentService,
     private settingsService: SettingsService,
@@ -52,14 +56,14 @@ export class GameEngineService {
     this.players = this.gameConfig.players;
     this.currentPlayer = this.players[PlayerId.ONE];
     this.currentPlayer = this.players[PlayerId.ONE];
-    const emptyBoard: FlatBoard = generateEmptyBoard(3, 3);
+    const emptyBoard: FlatBoard<string> = generateEmptyBoard(3, 3);
     this.boardBS.next(emptyBoard);
     this.winnerBS.next(undefined);
     this.tieGameBS.next(undefined);
     this.playComputerIfNeeded(emptyBoard);
   }
 
-  private executeMove(board: FlatBoard, move: Move): void {
+  private executeMove(board: FlatBoard<string>, move: Move): void {
     board = this.updateBoard(board, move);
     if (isGameWon(board, move.player)){
       this.winnerBS.next(move.player);
@@ -73,7 +77,7 @@ export class GameEngineService {
     this.playComputerIfNeeded(board);
   }
 
-  private playComputerIfNeeded(board: FlatBoard): void {
+  private playComputerIfNeeded(board: FlatBoard<string>): void {
     if (this.currentPlayer.opponentType === OpponentType.COMPUTER){
       const flatIndex = this.computerOpponentService.getNextMove(this.currentPlayer, deepCloneBoard(board), this.gameConfig);
       const computerMove: Move = {
@@ -83,13 +87,12 @@ export class GameEngineService {
       this.executeMove(board, computerMove);
     }
   }
-  private updateBoard(currentBoard: FlatBoard, move: Move): FlatBoard{
+  private updateBoard(currentBoard: FlatBoard<string>, move: Move): FlatBoard<string>{
     const {flatIndex, player} = move;
-    const updatedCells = currentBoard.cells.map((cell: BoardCell, index: number) => {
-      const cellValue = (index === flatIndex) ? player.mark : cell.value;
-      return {...cell, value: cellValue};
-    });
-    const updatedBoard: FlatBoard = {...currentBoard, cells: updatedCells};
+    const updatedCells = currentBoard.cells.map(
+      (cell: string, index: number) => (index === flatIndex) ? player.mark : cell
+    );
+    const updatedBoard: FlatBoard<string> = {...currentBoard, cells: updatedCells};
     this.boardBS.next(updatedBoard);
     return updatedBoard;
   }

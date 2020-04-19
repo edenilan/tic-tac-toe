@@ -2,10 +2,15 @@ import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from '@angular/co
 import {GameEngineService} from "./game-engine.service";
 import {ActivatedRoute} from "@angular/router";
 import {MatSnackBar} from "@angular/material/snack-bar";
-import {merge, Observable} from "rxjs";
-import {filter, map, mapTo} from "rxjs/operators";
-import {Player, TwoDimensionalBoard} from "../ttt.types";
+import {combineLatest, merge, Observable} from "rxjs";
+import {filter, map, mapTo, startWith} from "rxjs/operators";
+import {FlatBoard, Player} from "../ttt.types";
 import {to2DBoard} from "./game.helpers";
+
+export interface BoardCellWithWinningIndication {
+  value: string;
+  isInWinningCombo: boolean;
+}
 
 @Component({
   selector: 'ttt-game',
@@ -23,8 +28,22 @@ export class GameComponent implements OnInit, OnDestroy {
     mapTo("Tie game!")
   );
   private showSnackBar$: Observable<string> = merge(this.winnerMessage$, this.tieGameMessage$);
-  private board$: Observable<TwoDimensionalBoard> = this.gameEngineService.board$.pipe(
-    map(to2DBoard)
+  private winningIndices$: Observable<number[]> = this.gameEngineService.winningIndices$.pipe(
+    startWith([])
+  );
+  public board$: Observable<BoardCellWithWinningIndication[][]> = combineLatest([this.gameEngineService.board$, this.winningIndices$]).pipe(
+    map(([board, winningIndices]: [FlatBoard<string>, number[]]) => {
+      const cells: BoardCellWithWinningIndication[] = board.cells.map((cellValue: string, index: number) => ({
+          value: cellValue,
+          isInWinningCombo: winningIndices.includes(index)
+        })
+      );
+      return {
+        ...board,
+        cells: cells
+      }
+    }),
+    map((board: FlatBoard<BoardCellWithWinningIndication>) => to2DBoard(board))
   );
   constructor(
     public gameEngineService: GameEngineService,

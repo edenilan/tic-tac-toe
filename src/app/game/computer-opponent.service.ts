@@ -8,7 +8,7 @@ export class ComputerOpponentService {
   private otherPlayer: Player;
   constructor() {
   }
-  public getNextMove(currentPlayer: Player, board: FlatBoard, gameConfig: GameConfig): number {
+  public getNextMove(currentPlayer: Player, board: FlatBoard<string>, gameConfig: GameConfig): number {
     this.setConfig(currentPlayer, gameConfig);
     return this.computeBestMove(board, this.currentPlayer).index;
   }
@@ -17,7 +17,7 @@ export class ComputerOpponentService {
     this.currentPlayer = currentPlayer;
     this.otherPlayer = Object.values(players).find((player: Player) => player !== currentPlayer);
   }
-  private computeBestMove(board: FlatBoard, player: Player){
+  private computeBestMove(board: FlatBoard<string>, player: Player){
     var availableSpots = getFlatBoardEmptyIndices(board);
 
     if(isGameWon(board, this.otherPlayer)){
@@ -32,7 +32,7 @@ export class ComputerOpponentService {
     for(var i =0; i < availableSpots.length; i++){
       var move: any = {};
       move.index = availableSpots[i];
-      board.cells[availableSpots[i]].value = player.mark;
+      board.cells[availableSpots[i]] = player.mark;
 
       if(player == this.currentPlayer){
         var result = this.computeBestMove(board, this.otherPlayer);
@@ -41,7 +41,7 @@ export class ComputerOpponentService {
         var result = this.computeBestMove(board, this.currentPlayer);
         move.score = result.score;
       }
-      board.cells[availableSpots[i]].value = undefined;
+      board.cells[availableSpots[i]] = undefined;
       moves.push(move);
     }
 
