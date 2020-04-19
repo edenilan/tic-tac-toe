@@ -2,11 +2,11 @@
 <button routerLink="/settings" routerLinkActive="active">Settings</button>
 
 <table>
-  <tr *ngFor="let row of gameEngineService.board$|async; index as rowIndex">
+  <tr *ngFor="let row of board$|async; index as rowIndex">
     <td *ngFor="let cell of row; index as cellIndex"
-        class="cell"
+        [class.winning-combo-cell]="cell.isInWinningCombo"
         (click)="cellClicked(rowIndex, cellIndex)">
-      {{cell}}
+      {{cell.value}}
     </td>
   </tr>
 </table>

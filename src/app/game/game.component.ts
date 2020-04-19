@@ -4,7 +4,8 @@ import {ActivatedRoute} from "@angular/router";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {merge, Observable} from "rxjs";
 import {filter, map, mapTo} from "rxjs/operators";
-import {Player} from "../ttt.types";
+import {Player, TwoDimensionalBoard} from "../ttt.types";
+import {to2DBoard} from "./game.helpers";
 
 @Component({
   selector: 'ttt-game',
@@ -22,6 +23,9 @@ export class GameComponent implements OnInit, OnDestroy {
     mapTo("Tie game!")
   );
   private showSnackBar$: Observable<string> = merge(this.winnerMessage$, this.tieGameMessage$);
+  private board$: Observable<TwoDimensionalBoard> = this.gameEngineService.board$.pipe(
+    map(to2DBoard)
+  );
   constructor(
     public gameEngineService: GameEngineService,
     private activatedRoute: ActivatedRoute,

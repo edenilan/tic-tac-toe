@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
-import {BoardCoordinates, GameConfig, OpponentType, Player, PlayersMap} from "../ttt.types";
-import {checkWinForFlatBoard, flattenBoard, getFlatBoardEmptyIndices} from "./game.helpers";
+import {FlatBoard, GameConfig, Player} from "../ttt.types";
+import {getFlatBoardEmptyIndices, isGameWon} from "./game.helpers";
 
 @Injectable()
 export class ComputerOpponentService {
@@ -8,26 +8,21 @@ export class ComputerOpponentService {
   private otherPlayer: Player;
   constructor() {
   }
-  public getNextMove(currentPlayer: Player, board: string[][], gameConfig: GameConfig): BoardCoordinates {
+  public getNextMove(currentPlayer: Player, board: FlatBoard, gameConfig: GameConfig): number {
     this.setConfig(currentPlayer, gameConfig);
-    const bestMoveFlatIndex = this.computeBestMove(flattenBoard(board), this.currentPlayer).index;
-    return {
-      // TODO: remove magic numbers (3)
-      row: Math.floor(bestMoveFlatIndex / 3),
-      column: bestMoveFlatIndex % 3
-    };
+    return this.computeBestMove(board, this.currentPlayer).index;
   }
   private setConfig(currentPlayer: Player, gameConfig: GameConfig){
     const {players} = gameConfig;
     this.currentPlayer = currentPlayer;
     this.otherPlayer = Object.values(players).find((player: Player) => player !== currentPlayer);
   }
-  private computeBestMove(board: string[], player: Player){
+  private computeBestMove(board: FlatBoard, player: Player){
     var availableSpots = getFlatBoardEmptyIndices(board);
 
-    if(checkWinForFlatBoard(board, this.otherPlayer)){
+    if(isGameWon(board, this.otherPlayer)){
       return{score: -10};
-    }else if(checkWinForFlatBoard(board, this.currentPlayer)){
+    }else if(isGameWon(board, this.currentPlayer)){
       return {score: 10};
     }else if(availableSpots.length === 0){
       return {score: 0};
@@ -37,7 +32,7 @@ export class ComputerOpponentService {
     for(var i =0; i < availableSpots.length; i++){
       var move: any = {};
       move.index = availableSpots[i];
-      board[availableSpots[i]] = player.mark;
+      board.cells[availableSpots[i]].value = player.mark;
 
       if(player == this.currentPlayer){
         var result = this.computeBestMove(board, this.otherPlayer);
@@ -46,7 +41,7 @@ export class ComputerOpponentService {
         var result = this.computeBestMove(board, this.currentPlayer);
         move.score = result.score;
       }
-      board[availableSpots[i]] = undefined;
+      board.cells[availableSpots[i]].value = undefined;
       moves.push(move);
     }
 
