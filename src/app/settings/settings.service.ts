@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {GameConfig, OpponentType, PlayerId} from "../ttt.types";
 
-export const MARKS: string[] = ["🐔","🐷","🐻","🐺","🐵","🦊","🦄","🦔","🦜","🦋","🌼","🍄", "👽", "🍓", "🥑", "🍗", "🍔", "💩", "🤖", "👻", "⛄","💥"];
+export const MARKS: string[] = ["❌","⭕","🐔","🐷","🐻","🐺","🐵","🦊","🦄","🦔","🦜","🦋","🌼","🍄", "👽", "🍓", "🥑", "🍗", "🍔", "💩", "🤖", "👻", "⛄","💥"];
 const defaultGameConfig: GameConfig = {
   players: {
     [PlayerId.ONE]: {

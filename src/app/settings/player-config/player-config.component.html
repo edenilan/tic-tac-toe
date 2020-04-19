@@ -14,8 +14,8 @@
       <mat-label>Name</mat-label>
       <input matInput formControlName="name">
     </mat-form-field>
-    <mat-form-field class="mark-select" appearance="fill">
-      <mat-select formControlName="mark">
+    <mat-form-field class="mark-select-form-field" appearance="fill">
+      <mat-select class="mark-select" formControlName="mark">
         <mat-option *ngFor="let mark of marks" [value]="mark">
           {{mark}}
         </mat-option>
