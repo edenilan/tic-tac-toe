@@ -10,9 +10,3 @@
     </td>
   </tr>
 </table>
-<div *ngIf="gameEngineService.winner$|async as winner" class="endgame">
-  {{winner.name}} wins!
-</div>
-<div *ngIf="gameEngineService.tieGame$|async" class="endgame">
-  Tie Game!
-</div>

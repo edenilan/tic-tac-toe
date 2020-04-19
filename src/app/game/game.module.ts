@@ -5,6 +5,7 @@ import {GameEngineService} from "./game-engine.service";
 import {ComputerOpponentService} from "./computer-opponent.service";
 import {RouterModule} from "@angular/router";
 import {SettingsService} from "../settings/settings.service";
+import {MatSnackBarModule} from "@angular/material/snack-bar";
 
 
 
@@ -15,6 +16,7 @@ import {SettingsService} from "../settings/settings.service";
   imports: [
     CommonModule,
     RouterModule,
+    MatSnackBarModule,
   ],
   exports: [
     GameComponent
