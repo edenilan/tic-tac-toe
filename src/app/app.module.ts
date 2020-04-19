@@ -8,6 +8,7 @@ import { SettingsComponent } from './settings/settings.component';
 import {RouterModule, Routes} from "@angular/router";
 import {GameComponent} from "./game/game.component";
 import {SettingsModule} from "./settings/settings.module";
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 const appRoutes: Routes = [
   { path: 'settings', component: SettingsComponent },
@@ -34,6 +35,7 @@ const appRoutes: Routes = [
       { enableTracing: true }
     ),
     SettingsModule,
+    BrowserAnimationsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
