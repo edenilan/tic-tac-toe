@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable, Subject} from "rxjs";
 import {deepCloneBoard, isGameWon, isTie} from "./game.helpers";
 import {ComputerOpponentService} from "./computer-opponent.service";
-import {Cell, GameConfig, Move, OpponentType, Player, PlayerId, PlayersMap} from "../ttt.types";
+import {BoardCoordinates, GameConfig, Move, OpponentType, Player, PlayerId, PlayersMap} from "../ttt.types";
 import {SettingsService} from "../settings/settings.service";
 
 const EMPTY_BOARD = [
@@ -13,8 +13,8 @@ const EMPTY_BOARD = [
 
 @Injectable()
 export class GameEngineService {
-  public boardBS = new BehaviorSubject<string[][]>(EMPTY_BOARD);
-  public board$: Observable<string[][]> = this.boardBS.asObservable();
+  public boardBS = new BehaviorSubject<FlatBoard>(generateEmptyBoard(3, 3));
+  public board$: Observable<FlatBoard> = this.boardBS.asObservable();
   private winnerBS = new BehaviorSubject<Player>(undefined);
   public winner$: Observable<Player> = this.winnerBS.asObservable();
   private tieGameBS = new BehaviorSubject<true>(undefined);
@@ -27,16 +27,16 @@ export class GameEngineService {
     private settingsService: SettingsService,
   ) {}
 
-  public cellClicked(cell: Cell): void {
+  public cellClicked(boardCoordinates: BoardCoordinates): void {
     if (this.isGameOver()){
       return;
     }
     const currentBoard = this.boardBS.getValue();
-    if (currentBoard[cell.row][cell.column] !== undefined){
+    if (currentBoard[boardCoordinates.row][boardCoordinates.column] !== undefined){
       return;
     }
     const move: Move = {
-      cell: cell,
+      boardCoordinates: boardCoordinates,
       player: this.currentPlayer
     };
     this.executeMove(currentBoard, move);

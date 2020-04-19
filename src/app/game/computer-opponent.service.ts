@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Cell, GameConfig, OpponentType, Player, PlayersMap} from "../ttt.types";
+import {BoardCoordinates, GameConfig, OpponentType, Player, PlayersMap} from "../ttt.types";
 import {checkWinForFlatBoard, flattenBoard, getFlatBoardEmptyIndices} from "./game.helpers";
 
 @Injectable()
@@ -8,7 +8,7 @@ export class ComputerOpponentService {
   private otherPlayer: Player;
   constructor() {
   }
-  public getNextMove(currentPlayer: Player, board: string[][], gameConfig: GameConfig): Cell {
+  public getNextMove(currentPlayer: Player, board: string[][], gameConfig: GameConfig): BoardCoordinates {
     this.setConfig(currentPlayer, gameConfig);
     const bestMoveFlatIndex = this.computeBestMove(flattenBoard(board), this.currentPlayer).index;
     return {

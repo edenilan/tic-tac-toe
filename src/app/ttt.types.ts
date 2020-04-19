@@ -1,9 +1,9 @@
-export interface Cell {
+export interface BoardCoordinates {
   row: number;
   column: number;
 }
 export interface Move{
-  cell: Cell
+  boardCoordinates: BoardCoordinates
   player: Player;
 }
 export enum OpponentType {
@@ -26,5 +26,5 @@ export interface PlayersMap {
 }
 
 export interface GameConfig{
-  players: PlayersMap
+  players: PlayersMap;
 }
