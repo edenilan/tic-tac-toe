@@ -9,6 +9,7 @@ import {RouterModule, Routes} from "@angular/router";
 import {GameComponent} from "./game/game.component";
 import {SettingsModule} from "./settings/settings.module";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {MatToolbarModule} from "@angular/material/toolbar";
 
 const appRoutes: Routes = [
   { path: 'settings', component: SettingsComponent },
@@ -36,6 +37,7 @@ const appRoutes: Routes = [
     ),
     SettingsModule,
     BrowserAnimationsModule,
+    MatToolbarModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

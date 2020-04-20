@@ -6,6 +6,9 @@ import {ComputerOpponentService} from "./computer-opponent.service";
 import {RouterModule} from "@angular/router";
 import {SettingsService} from "../settings/settings.service";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
+import {MatIconModule} from "@angular/material/icon";
+import {MatButtonModule} from "@angular/material/button";
+import {MatTooltipModule} from "@angular/material/tooltip";
 
 
 
@@ -17,6 +20,9 @@ import {MatSnackBarModule} from "@angular/material/snack-bar";
     CommonModule,
     RouterModule,
     MatSnackBarModule,
+    MatIconModule,
+    MatButtonModule,
+    MatTooltipModule,
   ],
   exports: [
     GameComponent
@@ -24,7 +30,7 @@ import {MatSnackBarModule} from "@angular/material/snack-bar";
   providers: [
     GameEngineService,
     ComputerOpponentService,
-    SettingsService
+    SettingsService,
   ]
 })
 export class GameModule { }

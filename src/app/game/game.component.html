@@ -1,6 +1,16 @@
-<button (click)="replayButtonClicked()">Replay</button>
-<button routerLink="/settings" routerLinkActive="active">Settings</button>
-
+<div class="menu">
+  <button mat-mini-fab color="warn"
+          matTooltip="start over"
+          (click)="replayButtonClicked()">
+    <mat-icon>replay</mat-icon>
+  </button>
+  <button routerLink="/settings"
+          routerLinkActive="active"
+          matTooltip="settings"
+          mat-mini-fab color="warn">
+    <mat-icon>settings</mat-icon>
+  </button>
+</div>
 <table>
   <tr *ngFor="let row of board$|async; index as rowIndex">
     <td *ngFor="let cell of row; index as cellIndex"

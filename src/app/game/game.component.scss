@@ -1,3 +1,10 @@
+:host {
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
 td {
   border: 4px solid black;
   height: 100px;
@@ -11,10 +18,6 @@ td {
 
 table{
   border-collapse: collapse;
-  position: absolute;
-  left: 50%;
-  margin-left: -155px;
-  top: 50px;
 }
 
 table tr:first-child td{
@@ -36,3 +39,14 @@ table tr td:last-child{
 .winning-combo-cell{
   background-color: #e16b1f85
 }
+.menu {
+  position: absolute;
+  right: 30px;
+  bottom: 30px;
+  align-self: flex-end;
+
+  button{
+    margin: 6px;
+  }
+}
+
