@@ -46,8 +46,11 @@ export function isGameWon(flatBoard: FlatBoard<string>, player: Player): boolean
   return winningIndices && winningIndices.length > 0;
 }
 
-export function isTie(board: FlatBoard<string>, player: Player): boolean {
-  return !isGameWon(board, player) && board.cells.every((cell: string) => cell !== undefined);
+export function findWinner(flatBoard: FlatBoard<string>, players: Player[]): Player | undefined {
+  return players.find(player => isGameWon(flatBoard, player));
+}
+export function isTie(board: FlatBoard<string>, players: Player[]): boolean {
+  return !players.some(player => isGameWon(board, player)) && board.cells.every((cell: string) => cell !== undefined);
 }
 
 export function deepCloneBoard(board: FlatBoard<string>): FlatBoard<string>{

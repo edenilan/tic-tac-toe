@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {FlatBoard, GameConfig, Player} from "../ttt.types";
 import {getFlatBoardEmptyIndices, isGameWon} from "./game.helpers";
 import {Opponent} from "./opponent";
+import {Observable, of} from "rxjs";
 
 @Injectable()
 export class ComputerOpponentService implements Opponent{
@@ -9,9 +10,9 @@ export class ComputerOpponentService implements Opponent{
   private otherPlayer: Player;
   constructor() {
   }
-  public getNextMove(currentPlayer: Player, board: FlatBoard<string>, gameConfig: GameConfig): number {
+  public getNextMove(currentPlayer: Player, board: FlatBoard<string>, gameConfig: GameConfig): Observable<number> {
     this.setConfig(currentPlayer, gameConfig);
-    return this.computeBestMove(board, this.currentPlayer).index;
+    return of(this.computeBestMove(board, this.currentPlayer).index);
   }
   private setConfig(currentPlayer: Player, gameConfig: GameConfig){
     const {players} = gameConfig;
