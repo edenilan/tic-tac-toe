@@ -41,7 +41,7 @@ export class GameEngineService {
     }
     const currentBoard = this.boardBS.getValue();
     const flatIndex = getFlatIndex(boardCoordinates, currentBoard.numColumns);
-    if (currentBoard[flatIndex] !== undefined){
+    if (currentBoard.cells[flatIndex] !== undefined){
       return;
     }
     const move: Move = {
