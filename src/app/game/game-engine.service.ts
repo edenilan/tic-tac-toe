@@ -1,7 +1,6 @@
-import {Injectable} from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
 import {BehaviorSubject, combineLatest, Observable} from "rxjs";
 import {deepCloneBoard, generateEmptyBoard, getFlatIndex, getWinningIndices, isGameWon, isTie} from "./game.helpers";
-import {ComputerOpponentService} from "./computer-opponent.service";
 import {
   BoardCoordinates,
   FlatBoard,
@@ -14,6 +13,7 @@ import {
 } from "../ttt.types";
 import {SettingsService} from "../settings/settings.service";
 import {filter, map} from "rxjs/operators";
+import {Opponent, OPPONENT_DI_TOKEN} from "./opponent";
 
 @Injectable()
 export class GameEngineService {
@@ -31,7 +31,7 @@ export class GameEngineService {
     map(([winner, board]) => getWinningIndices(board, winner))
 );
   constructor(
-    private computerOpponentService: ComputerOpponentService,
+    @Inject(OPPONENT_DI_TOKEN) private opponentService: Opponent,
     private settingsService: SettingsService,
   ) {}
 
@@ -54,7 +54,6 @@ export class GameEngineService {
   public startNewGame(): void {
     this.gameConfig = this.settingsService.gameConfig;
     this.players = this.gameConfig.players;
-    this.currentPlayer = this.players[PlayerId.ONE];
     this.currentPlayer = this.players[PlayerId.ONE];
     const emptyBoard: FlatBoard<string> = generateEmptyBoard(3, 3);
     this.boardBS.next(emptyBoard);
@@ -79,7 +78,7 @@ export class GameEngineService {
 
   private playComputerIfNeeded(board: FlatBoard<string>): void {
     if (this.currentPlayer.opponentType === OpponentType.COMPUTER){
-      const flatIndex = this.computerOpponentService.getNextMove(this.currentPlayer, deepCloneBoard(board), this.gameConfig);
+      const flatIndex = this.opponentService.getNextMove(this.currentPlayer, deepCloneBoard(board), this.gameConfig);
       const computerMove: Move = {
         flatIndex: flatIndex,
         player: this.currentPlayer

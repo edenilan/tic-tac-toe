@@ -6,6 +6,9 @@ import {combineLatest, merge, Observable} from "rxjs";
 import {filter, map, mapTo, startWith} from "rxjs/operators";
 import {FlatBoard, Player} from "../ttt.types";
 import {to2DBoard} from "./game.helpers";
+import {SettingsService} from "../settings/settings.service";
+import {OPPONENT_DI_TOKEN} from "./opponent";
+import {OpponentFactory} from "./opponent.factory";
 
 export interface BoardCellWithWinningIndication {
   value: string;
@@ -17,6 +20,20 @@ export interface BoardCellWithWinningIndication {
   templateUrl: './game.component.html',
   styleUrls: ['./game.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    {
+      provide: OPPONENT_DI_TOKEN,
+      useFactory: OpponentFactory,
+      deps: [SettingsService]
+    },
+    {
+      provide: GameEngineService,
+      deps: [
+        OPPONENT_DI_TOKEN,
+        SettingsService,
+      ]
+    },
+  ]
 })
 export class GameComponent implements OnInit, OnDestroy {
   private winnerMessage$: Observable<string> = this.gameEngineService.winner$.pipe(

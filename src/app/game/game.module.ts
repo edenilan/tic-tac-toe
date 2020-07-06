@@ -28,8 +28,6 @@ import {MatTooltipModule} from "@angular/material/tooltip";
     GameComponent
   ],
   providers: [
-    GameEngineService,
-    ComputerOpponentService,
     SettingsService,
   ]
 })

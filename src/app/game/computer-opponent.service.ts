@@ -1,9 +1,10 @@
 import {Injectable} from '@angular/core';
 import {FlatBoard, GameConfig, Player} from "../ttt.types";
 import {getFlatBoardEmptyIndices, isGameWon} from "./game.helpers";
+import {Opponent} from "./opponent";
 
 @Injectable()
-export class ComputerOpponentService {
+export class ComputerOpponentService implements Opponent{
   private currentPlayer: Player;
   private otherPlayer: Player;
   constructor() {
